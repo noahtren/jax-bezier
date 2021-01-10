@@ -82,7 +82,8 @@ def plot_bezier_check():
     np.array([[1, 0], [0.1, 0.6]]),
     np.array([[1, 1], [0.8, 0.9]]),
   ]
-
+  
+  curve = bezier(*points)
   res1 = line(points[0], points[1])
   res2 = line(points[1], points[2])
   res3 = lerp(res1, res2)
@@ -101,7 +102,8 @@ def plot_bezier_check():
   fig.add_trace(go.Scatter(x=res5[0, :, 0], y=res5[0, :, 1], name='linear4'))
   fig.add_trace(go.Scatter(x=res6[0, :, 0], y=res6[0, :, 1], name='quad2'))
   fig.add_trace(go.Scatter(x=res7[0, :, 0], y=res7[0, :, 1], name='cubic'))
-  fig.add_trace(go.Scatter(x=final[0, :, 0], y=final[0, :, 1], name='final'))
+  fig.add_trace(go.Scatter(x=curve[0, :, 0], y=curve[0, :, 1], name='curve'))
+  # `cubic` and `curve` should be the same
   fig.show()
 
 
@@ -121,9 +123,9 @@ def raster_check():
     np.array([[1, 0, 1], [0, 1, 0]])
   )
 
-  final = bezier(*points)
+  curve = bezier(*points)
   img = raster(
-    final[np.newaxis],
+    curve[np.newaxis],
     widths=widths[np.newaxis],
     colors=colors[np.newaxis])
   fig = px.imshow(img[0])
