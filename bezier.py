@@ -61,7 +61,7 @@ def raster(coords, widths=None, colors=None, dim=128, background=np.array([0, 0,
   colors = jax.vmap(lambda a, b: np.take(a, b, axis=1), in_axes=[1, 1], out_axes=1)(colors, closest_t)
   colors = colors[..., 0, :]
 
-  # get alpha channel (where strokes happen)
+  # get alpha channel
   alpha = np.min(dists, axis=[1, 2])
   alpha = np.min(dists, axis=[1, 2]) - widths
   alpha = 1 - (alpha * dim)
@@ -69,9 +69,6 @@ def raster(coords, widths=None, colors=None, dim=128, background=np.array([0, 0,
   # compositing
   alpha = np.where(alpha < 0, 0, alpha)
   alpha = np.where(alpha > 1, 1, alpha)
-  paint = np.maximum(
-    alpha[..., np.newaxis] * colors,
-    background - np.tile(alpha[..., np.newaxis], [1, 1, 3]))
   paint = alpha[..., np.newaxis] * colors + (1 - np.tile(alpha[..., np.newaxis], [1, 1, 3])) * background
   paint = np.reshape(paint, [batch_size, dim, dim, 3])
 
